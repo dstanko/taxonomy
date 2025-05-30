@@ -14,13 +14,11 @@ public class CategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  public Category createCategory(String name, Long parentId) {
-    Category category = new Category();
-    category.setName(name);
-    if (parentId != null) {
+  public Category createCategory(Category category) {
+    if (category.getParentCategory() != null) {
       Category parent =
           categoryRepository
-              .findById(parentId)
+              .findById(category.getParentCategory().getId())
               .orElseThrow(() -> new RuntimeException("Parent category not found"));
       category.setParentCategory(parent);
     }
@@ -29,6 +27,12 @@ public class CategoryService {
 
   public List<Category> getAllCategories() {
     return categoryRepository.findAll();
+  }
+
+  public Category getCategory(Long id) {
+    return categoryRepository
+        .findById(id)
+        .orElseThrow(() -> new RuntimeException("Category not found"));
   }
 
   public void deleteCategory(Long id) {

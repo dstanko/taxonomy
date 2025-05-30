@@ -1,5 +1,6 @@
 package com.taxonomy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,10 +24,10 @@ public class Category {
 
   @ManyToOne
   @JoinColumn(name = "parent_id")
+  @JsonIgnoreProperties({"children"})
   private Category parentCategory;
 
+  @JsonIgnoreProperties({"parentCategory", "children"})
   @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL)
   private List<Category> children = new ArrayList<>();
-
-  // Getters and Setters
 }

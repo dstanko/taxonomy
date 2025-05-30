@@ -16,14 +16,18 @@ public class CategoryController {
   }
 
   @PostMapping
-  public Category createCategory(
-      @RequestParam String name, @RequestParam(required = false) Long parentId) {
-    return categoryService.createCategory(name, parentId);
+  public Category createCategory(@RequestBody Category category) {
+    return categoryService.createCategory(category);
   }
 
   @GetMapping
   public List<Category> getAllCategories() {
     return categoryService.getAllCategories();
+  }
+
+  @GetMapping("/{id}")
+  public Category getCategoryById(@PathVariable Long id) {
+    return categoryService.getCategory(id);
   }
 
   @DeleteMapping("/{id}")
