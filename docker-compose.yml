@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: taxonomy-db
+    environment:
+      POSTGRES_DB: taxonomydb
+      POSTGRES_USER: taxonomyuser
+      POSTGRES_PASSWORD: taxonomypass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taxonomyuser -d taxonomydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: taxonomy-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taxonomydb
+      SPRING_DATASOURCE_USERNAME: taxonomyuser
+      SPRING_DATASOURCE_PASSWORD: taxonomypass
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
